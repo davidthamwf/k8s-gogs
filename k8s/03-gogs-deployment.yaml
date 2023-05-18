@@ -5,7 +5,6 @@ metadata:
   namespace: gogs
   labels:
     app: gogs
-    service: gogs
   annotations:
     'prometheus.io/scrape': 'true'
 spec:
@@ -13,14 +12,13 @@ spec:
   - name: ssh
     protocol: TCP
     port: 22
-    targetPort: 22
+    targetPort: 10022
   - name: http
     protocol: TCP
     port: 3000
-    targetPort: 3000
+    targetPort: 30000
   selector:
     app: gogs
-    service: gogs
   type: ClusterIP
 
 ---
@@ -47,19 +45,15 @@ metadata:
   namespace: gogs
   labels:
     app: gogs
-    service: gogs
 spec:
-  serviceName: gogs
   replicas: 1
   selector:
     matchLabels:
       app: gogs
-      service: gogs
   template:
     metadata:
       labels:
         app: gogs
-        service: gogs
     spec:
       terminationGracePeriodSeconds: 10
       initContainers:
@@ -91,11 +85,6 @@ spec:
             configMapKeyRef:
               name: gogs-ini
               key: db_user
-        - name: DB_PASS
-          valueFrom:
-            configMapKeyRef:
-              name: gogs-ini
-              key: db_pass
         - name: DB_PASS
           valueFrom:
             configMapKeyRef:

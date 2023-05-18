@@ -5,7 +5,6 @@ metadata:
   namespace: gogs
   labels:
     app: postgres
-    service: database
   annotations:
     'prometheus.io/scrape': 'true'
 spec:
@@ -16,7 +15,6 @@ spec:
     targetPort: 5432
   selector:
     app: postgres
-    service: database
   type: ClusterIP
 
 ---
@@ -43,19 +41,15 @@ metadata:
   namespace: gogs
   labels:
     app: postgres
-    service: database
 spec:
-  serviceName: postgres
   replicas: 1
   selector:
     matchLabels:
       app: postgres
-      service: database
   template:
     metadata:
       labels:
         app: postgres
-        service: database
     spec:
       terminationGracePeriodSeconds: 10
       # initContainers:
