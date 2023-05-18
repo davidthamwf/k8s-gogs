@@ -7,7 +7,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: psql-seed-script
-  namespace: vcs
+  namespace: gogs
 data:
   seed: |
     $(cat ${seed_script})

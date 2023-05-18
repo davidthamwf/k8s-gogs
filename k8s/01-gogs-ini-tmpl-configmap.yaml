@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: gogs-ini-tmpl
-  namespace: vcs
+  namespace: gogs
 data:
   app.tmpl.ini: |
     APP_NAME = ${APP_NAME}
@@ -54,4 +54,4 @@ data:
 
     [security]
     INSTALL_LOCK = true
-    SECRET_KEY   = QC5KjsCQuSkVWYE
+    SECRET_KEY   = VGhpcy1pcy0xLXN0cm9uZy1wYXNzd29yZCE=

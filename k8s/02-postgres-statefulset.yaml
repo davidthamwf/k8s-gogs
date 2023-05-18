@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: postgres
-  namespace: vcs
+  namespace: gogs
   labels:
     app: postgres
     service: database
@@ -23,7 +23,7 @@ apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
   name: postgres
-  namespace: vcs
+  namespace: gogs
   labels:
     app: postgres
     service: database
@@ -37,17 +37,17 @@ spec:
         service: database
     spec:
       terminationGracePeriodSeconds: 10
-      initContainers:
-      - name: download-pgfutter
-        image: sherylynn/wget:latest
-        command:
-        - sh
-        args:
-        - -c
-        - "wget -O /pgfutter-dir/pgfutter https://github.com/lukasmartinelli/pgfutter/releases/download/v1.1/pgfutter_linux_amd64 --no-check-certificate"
-        volumeMounts:
-        - name: pgfutter-dir
-          mountPath: /pgfutter-dir
+      # initContainers:
+      # - name: download-pgfutter
+      #   image: sherylynn/wget:latest
+      #   command:
+      #   - sh
+      #   args:
+      #   - -c
+      #   - "wget -O /pgfutter-dir/pgfutter https://github.com/lukasmartinelli/pgfutter/releases/download/v1.1/pgfutter_linux_amd64 --no-check-certificate"
+      #   volumeMounts:
+      #   - name: pgfutter-dir
+      #     mountPath: /pgfutter-dir
       containers:
       - name: postgres
         image: postgres
@@ -94,26 +94,26 @@ spec:
         #   timeoutSeconds: 5
         resources:
           requests:
-            cpu: "0.01"
+            cpu: "0.5"
         volumeMounts:
         - name: postgres-data
           mountPath: /var/lib/postgresql/data
-        - name: pgfutter-dir
-          mountPath: /pgfutter-dir
-        - name: sql-files
-          mountPath: /sql
-        - name: psql-seed-script
-          mountPath: /seed-script
+        # - name: pgfutter-dir
+        #   mountPath: /pgfutter-dir
+        # - name: sql-files
+        #   mountPath: /sql
+        # - name: psql-seed-script
+        #   mountPath: /seed-script
       restartPolicy: Always
-      volumes:
-      - name: sql-files
-        configMap:
-          name: sql-files
-      - name: psql-seed-script
-        configMap:
-          name: psql-seed-script
-      - name: pgfutter-dir
-        emptyDir: {}
+      # volumes:
+      # - name: sql-files
+      #   configMap:
+      #     name: sql-files
+      # - name: psql-seed-script
+      #   configMap:
+      #     name: psql-seed-script
+      # - name: pgfutter-dir
+      #   emptyDir: {}
   volumeClaimTemplates:
   - metadata:
       name: postgres-data
@@ -121,4 +121,4 @@ spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:
         requests:
-          storage: 1Gi
+          storage: 10Gi

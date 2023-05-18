@@ -7,7 +7,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: gogs-ini-tmpl
-  namespace: vcs
+  namespace: gogs
 data:
   app.tmpl.ini: |
     $(cat ${template_file})
