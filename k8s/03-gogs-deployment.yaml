@@ -24,7 +24,7 @@ spec:
   type: ClusterIP
 ---
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: gogs
   namespace: gogs
@@ -47,7 +47,7 @@ spec:
       terminationGracePeriodSeconds: 10
       initContainers:
       - name: generate-gogs-config
-        image: zamnuts/envsubst:latest
+        image: scottbeca/envsubst:latest
         env:
         - name: APP_NAME
           valueFrom:
@@ -84,74 +84,20 @@ spec:
             configMapKeyRef:
               name: gogs-ini
               key: db_pass
-        - name: OUTPUT_DESTINATION
-          value: /gogs-config/app.ini
-        command:
-        - file_generator
-        args:
-        - |
-          APP_NAME = ${APP_NAME}
-          RUN_USER = git
-          RUN_MODE = prod
-
-          [database]
-          DB_TYPE  = ${DB_TYPE}
-          HOST     = ${DB_HOST}
-          NAME     = ${DB_NAME}
-          USER     = ${DB_USER}
-          PASSWD   = ${DB_PASS}
-          SSL_MODE = disable
-          PATH     = data/gogs.db
-
-          [repository]
-          ROOT = /data/git/gogs-repositories
-
-          [server]
-          DOMAIN           = localhost
-          HTTP_PORT        = 3000
-          ROOT_URL         = http://localhost:3000/
-          DISABLE_SSH      = false
-          SSH_PORT         = 22
-          START_SSH_SERVER = false
-          OFFLINE_MODE     = false
-
-          [mailer]
-          ENABLED = false
-
-          [service]
-          REGISTER_EMAIL_CONFIRM = false
-          ENABLE_NOTIFY_MAIL     = false
-          DISABLE_REGISTRATION   = false
-          ENABLE_CAPTCHA         = true
-          REQUIRE_SIGNIN_VIEW    = false
-
-          [picture]
-          DISABLE_GRAVATAR        = false
-          ENABLE_FEDERATED_AVATAR = true
-
-          [session]
-          PROVIDER = file
-
-          [log]
-          MODE      = file
-          LEVEL     = Info
-          ROOT_PATH = /app/gogs/log
-
-          [security]
-          INSTALL_LOCK = true
-          SECRET_KEY   = VGhpcy1pcy0xLXN0cm9uZy1wYXNzd29yZCE=
+        # - name: OUTPUT_DESTINATION
+        #   value: /gogs-config/app.ini
         volumeMounts:
         - name: gogs-ini-tmpl
-          mountPath: /conf
+          mountPath: /workdir
         - name: gogs-config-dir
-          mountPath: /gogs-config
+          mountPath: /processed
       containers:
       - name: gogs
         image: gogs/gogs
         command:
         - sh
         - -c
-        - '/app/gogs/docker/start.sh cp -f /gogs-config/app.ini /data/gogs/conf/app.ini && chown -R git:git /data/gogs/conf && /bin/s6-svscan /app/gogs/docker/s6/'
+        - '/app/gogs/docker/start.sh cp -f /gogs-config/app.tmpl.ini /data/gogs/conf/app.ini && chown -R git:git /data/gogs/conf && /bin/s6-svscan /app/gogs/docker/s6/'
         ports:
         - name: ssh
           containerPort: 22
