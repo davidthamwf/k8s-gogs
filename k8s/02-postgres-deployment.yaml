@@ -18,6 +18,23 @@ spec:
     app: postgres
     service: database
   type: ClusterIP
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-data-pvc
+  namespace: gogs
+spec:
+  accessModes:
+  - ReadWriteOnce
+  # - ReadWriteMany
+  storageClassName: longhorn
+  # storageClassName: nfs-client
+  resources:
+    requests:
+      storage: 10Gi
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -118,11 +135,7 @@ spec:
       #     name: psql-seed-script
       # - name: pgfutter-dir
       #   emptyDir: {}
-  volumeClaimTemplates:
-  - metadata:
-      name: postgres-data
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: 10Gi
+      volumes:
+      - name: postgres-data
+        persistentVolumeClaim:
+          claimName: postgres-data-pvc

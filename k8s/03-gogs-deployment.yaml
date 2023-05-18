@@ -22,6 +22,23 @@ spec:
     app: gogs
     service: gogs
   type: ClusterIP
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: gogs-data-pvc
+  namespace: gogs
+spec:
+  accessModes:
+  - ReadWriteOnce
+  # - ReadWriteMany
+  storageClassName: longhorn
+  # storageClassName: nfs-client
+  resources:
+    requests:
+      storage: 10Gi
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -128,11 +145,6 @@ spec:
           name: gogs-ini-tmpl
       - name: gogs-config-dir
         emptyDir: {}
-  volumeClaimTemplates:
-  - metadata:
-      name: gogs-data
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: 10Gi
+      - name: gogs-data
+        persistentVolumeClaim:
+          claimName: gogs-data-pvc
