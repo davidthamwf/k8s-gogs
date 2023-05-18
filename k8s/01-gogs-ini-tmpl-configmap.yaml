@@ -5,16 +5,16 @@ metadata:
   namespace: gogs
 data:
   app.tmpl.ini: |
-    APP_NAME = ${APP_NAME}
+    BRAND_NAME = ${BRAND_NAME}
     RUN_USER = git
     RUN_MODE = prod
 
     [database]
-    DB_TYPE  = ${DB_TYPE}
+    TYPE     = ${DB_TYPE}
     HOST     = ${DB_HOST}
     NAME     = ${DB_NAME}
     USER     = ${DB_USER}
-    PASSWD   = ${DB_PASS}
+    PASSWORD = ${DB_PASS}
     SSL_MODE = disable
     PATH     = data/gogs.db
 
@@ -30,15 +30,22 @@ data:
     START_SSH_SERVER = false
     OFFLINE_MODE     = false
 
-    [mailer]
+    [email]
     ENABLED = false
 
-    [service]
-    REGISTER_EMAIL_CONFIRM = false
-    ENABLE_NOTIFY_MAIL     = false
-    DISABLE_REGISTRATION   = false
-    ENABLE_CAPTCHA         = true
-    REQUIRE_SIGNIN_VIEW    = false
+    [auth]
+    ACTIVATE_CODE_LIVES                     = 180
+    RESET_PASSWORD_CODE_LIVES               = 180
+    REQUIRE_EMAIL_CONFIRMATION              = false
+    REQUIRE_SIGNIN_VIEW                     = false
+    DISABLE_REGISTRATION                    = false
+    ENABLE_REGISTRATION_CAPTCHA             = true
+    ENABLE_REVERSE_PROXY_AUTHENTICATION     = false
+    ENABLE_REVERSE_PROXY_AUTO_REGISTRATION  = false
+    REVERSE_PROXY_AUTHENTICATION_HEADER     = X-WEBAUTH-USER
+
+    [user]
+    ENABLE_EMAIL_NOTIFICATION = false
 
     [picture]
     DISABLE_GRAVATAR        = false
@@ -53,5 +60,5 @@ data:
     ROOT_PATH = /app/gogs/log
 
     [security]
-    INSTALL_LOCK = true
+    INSTALL_LOCK = false
     SECRET_KEY   = VGhpcy1pcy0xLXN0cm9uZy1wYXNzd29yZCE=

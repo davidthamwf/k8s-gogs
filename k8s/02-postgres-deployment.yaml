@@ -85,6 +85,11 @@ spec:
             configMapKeyRef:
               name: postgres-config
               key: db_user
+        - name: PGUSER
+          valueFrom:
+            configMapKeyRef:
+              name: postgres-config
+              key: db_user
         - name: POSTGRES_PASSWORD
           valueFrom:
             configMapKeyRef:

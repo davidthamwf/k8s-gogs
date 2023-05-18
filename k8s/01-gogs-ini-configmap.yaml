@@ -4,7 +4,7 @@ metadata:
   name: gogs-ini
   namespace: gogs
 data:
-  app_name: Gogs
+  brand_name: Gogs
   db_type: postgres
   db_host: postgres.gogs.svc.cluster.local:5432
   db_name: gogs
