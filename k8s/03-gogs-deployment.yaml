@@ -12,14 +12,67 @@ spec:
   - name: ssh
     protocol: TCP
     port: 22
-    targetPort: 10022
   - name: http
     protocol: TCP
     port: 3000
-    targetPort: 30000
   selector:
     app: gogs
   type: ClusterIP
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: gogs-cert
+  namespace: gogs
+spec:
+  commonName: git.dave-vlab.corp
+  secretName: gogs-cert
+  dnsNames:
+    - git.dave-vlab.corp
+    - gogs.dave-vlab.corp
+  issuerRef:
+    name: intranet-cluster-issuer
+    kind: ClusterIssuer
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gogs-ingress
+  namespace: gogs
+  annotations:
+    io.cilium/tcp-keep-alive-idle: "10"
+    io.cilium/tcp-keep-alive-probe-interval: "5"
+    io.cilium/tcp-keep-alive-probe-max-failures: "10"
+    io.cilium/websocket: disabled
+spec:
+  ingressClassName: cilium
+  rules:
+    - host: git.dave-vlab.corp
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: gogs
+                port:
+                  number: 3000
+    - host: gogs.dave-vlab.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: gogs
+                port:
+                  number: 3000
+  tls:
+  - hosts:
+    - git.dave-vlab.corp
+    - gogs.dave-vlab.com
+    secretName: gogs-cert
 
 ---
 apiVersion: v1
