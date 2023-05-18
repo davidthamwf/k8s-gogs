@@ -60,11 +60,11 @@ spec:
       - name: generate-gogs-config
         image: scottbeca/envsubst:latest
         env:
-        - name: APP_NAME
+        - name: BRAND_NAME
           valueFrom:
             configMapKeyRef:
               name: gogs-ini
-              key: app_name
+              key: brand_name
         - name: DB_TYPE
           valueFrom:
             configMapKeyRef:
