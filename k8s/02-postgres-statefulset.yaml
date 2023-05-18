@@ -30,6 +30,10 @@ metadata:
 spec:
   serviceName: postgres
   replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+      service: database
   template:
     metadata:
       labels:
