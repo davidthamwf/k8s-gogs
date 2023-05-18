@@ -43,7 +43,7 @@ spec:
       terminationGracePeriodSeconds: 10
       initContainers:
       - name: generate-gogs-config
-        image: stevenaldinger/k8s-envsubst:latest
+        image: olegstepura/glibc-envsubst:latest
         env:
         - name: APP_NAME
           valueFrom:
