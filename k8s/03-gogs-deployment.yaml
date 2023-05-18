@@ -35,6 +35,7 @@ spec:
     name: intranet-cluster-issuer
     kind: ClusterIssuer
 
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -153,6 +154,9 @@ spec:
       containers:
       - name: gogs
         image: gogs/gogs
+        env:
+        - name: USERNAME
+          value: "git"
         command:
         - sh
         - -c

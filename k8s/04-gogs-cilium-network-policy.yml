@@ -1,0 +1,37 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: gogs
+  namespace: gogs
+spec:
+  endpointSelector:
+    matchLabels:
+      io.kubernetes.pod.namespace: gogs
+  ingress:
+    - fromEntities:
+        - host
+        - ingress
+        - world
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: gogs
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: kube-system
+            k8s-app: coredns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: gogs
+    - toEntities:
+        - world
+      toPorts:
+        - ports:
+            - port: "80"
+              protocol: TCP
+            - port: "443"
+              protocol: TCP
