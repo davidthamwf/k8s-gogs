@@ -30,50 +30,57 @@ spec:
   secretName: gogs-cert
   dnsNames:
     - git.dave-vlab.corp
-    - gogs.dave-vlab.corp
+    - gogs.dave-vlab.com
   issuerRef:
     name: intranet-cluster-issuer
     kind: ClusterIssuer
 
 ---
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
 metadata:
-  name: gogs-ingress
+  name: https-only
   namespace: gogs
-  annotations:
-    io.cilium/tcp-keep-alive-idle: "10"
-    io.cilium/tcp-keep-alive-probe-interval: "5"
-    io.cilium/tcp-keep-alive-probe-max-failures: "10"
-    io.cilium/websocket: disabled
 spec:
-  ingressClassName: cilium
-  rules:
-    - host: git.dave-vlab.corp
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: gogs
-                port:
-                  number: 3000
-    - host: gogs.dave-vlab.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: gogs
-                port:
-                  number: 3000
+  redirectScheme:
+    scheme: https
+    permanent: true
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: gogs-ingress-https
+  namespace: gogs
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`git.dave-vlab.corp`) || Host(`gogs.dave-vlab.com`)
+      kind: Rule
+      services:
+        - name: gogs
+          port: 3000
   tls:
-  - hosts:
-    - git.dave-vlab.corp
-    - gogs.dave-vlab.com
     secretName: gogs-cert
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: gogs-ingress-http
+  namespace: gogs
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`git.dave-vlab.corp`) || Host(`gogs.dave-vlab.com`)
+      middlewares:
+        - name: https-only
+      kind: Rule
+      services:
+        - name: gogs
+          port: 3000
 
 ---
 apiVersion: v1
