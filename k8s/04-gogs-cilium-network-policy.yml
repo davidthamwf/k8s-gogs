@@ -4,6 +4,31 @@ metadata:
   name: gogs
   namespace: gogs
 spec:
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: kube-system
+            k8s-app: coredns
+      toPorts:
+        - ports:
+            - port: '53'
+              protocol: UDP
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: gogs
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: traefik
+    - toEntities:
+        - host
+        - ingress
+        - world
+      toPorts:
+        - ports:
+            - port: "80"
+              protocol: TCP
+            - port: "443"
+              protocol: TCP
   endpointSelector:
     matchLabels:
       io.kubernetes.pod.namespace: gogs
@@ -15,23 +40,6 @@ spec:
     - fromEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: gogs
-  egress:
-    - toEndpoints:
+    - fromEndpoints:
         - matchLabels:
-            io.kubernetes.pod.namespace: kube-system
-            k8s-app: coredns
-      toPorts:
-        - ports:
-            - port: "53"
-              protocol: UDP
-    - toEndpoints:
-        - matchLabels:
-            io.kubernetes.pod.namespace: gogs
-    - toEntities:
-        - world
-      toPorts:
-        - ports:
-            - port: "80"
-              protocol: TCP
-            - port: "443"
-              protocol: TCP
+            io.kubernetes.pod.namespace: traefik
