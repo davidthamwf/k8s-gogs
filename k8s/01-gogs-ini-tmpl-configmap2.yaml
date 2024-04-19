@@ -20,23 +20,34 @@ data:
 
     [repository]
     ROOT = /data/git/gogs-repositories
+    DEFAULT_BRANCH = master
+
+    [repository.upload]
+    FILE_MAX_SIZE = 10
+    MAX_FILES = 5
 
     [server]
-    DOMAIN           = localhost
+    DOMAIN           = git.dave-vlab.corp
     HTTP_PORT        = 3000
     ROOT_URL         = http://localhost:3000/
     DISABLE_SSH      = false
     SSH_PORT         = 22
     START_SSH_SERVER = false
     OFFLINE_MODE     = false
+    EXTERNAL_URL     = https://git.dave-vlab.corp/
 
     [email]
-    ENABLED = false
+    ENABLED = true
+    HOST    = miab.dave-vlab.corp:587
+    FROM    = "Gogs" <alert@dave-vlab.com>
+    USER    = alert@dave-vlab.com
+    PASSWORD = budhab-zahtom-7koxqU
+    SKIP_VERIFY = true
 
     [auth]
     ACTIVATE_CODE_LIVES                     = 180
     RESET_PASSWORD_CODE_LIVES               = 180
-    REQUIRE_EMAIL_CONFIRMATION              = false
+    REQUIRE_EMAIL_CONFIRMATION              = true
     REQUIRE_SIGNIN_VIEW                     = false
     DISABLE_REGISTRATION                    = false
     ENABLE_REGISTRATION_CAPTCHA             = true
@@ -45,7 +56,7 @@ data:
     REVERSE_PROXY_AUTHENTICATION_HEADER     = X-WEBAUTH-USER
 
     [user]
-    ENABLE_EMAIL_NOTIFICATION = false
+    ENABLE_EMAIL_NOTIFICATION = true
 
     [picture]
     DISABLE_GRAVATAR        = false
@@ -53,6 +64,10 @@ data:
 
     [session]
     PROVIDER = file
+
+    [attachment]
+    MAX_SIZE = 10
+    MAX_FILES = 5
 
     [log]
     MODE      = file

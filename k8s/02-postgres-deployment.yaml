@@ -65,7 +65,7 @@ spec:
       #     mountPath: /pgfutter-dir
       containers:
       - name: postgres
-        image: postgres
+        image: postgres:15.4
         ports:
         - name: http
           containerPort: 5432
