@@ -27,21 +27,21 @@ data:
     MAX_FILES = 5
 
     [server]
-    DOMAIN           = git.dave-vlab.corp
+    DOMAIN           = git.company.com
     HTTP_PORT        = 3000
     ROOT_URL         = http://localhost:3000/
     DISABLE_SSH      = false
     SSH_PORT         = 22
     START_SSH_SERVER = false
     OFFLINE_MODE     = false
-    EXTERNAL_URL     = https://git.dave-vlab.corp/
+    EXTERNAL_URL     = https://git.company.com/
 
     [email]
     ENABLED = true
-    HOST    = miab.dave-vlab.corp:587
-    FROM    = "Gogs" <alert@dave-vlab.com>
-    USER    = alert@dave-vlab.com
-    PASSWORD = budhab-zahtom-7koxqU
+    HOST    = mail.company.com:587
+    FROM    = "Gogs" <gogs@company.com>
+    USER    = gogs@company.com
+    PASSWORD = someth-ingver-ylousy
     SKIP_VERIFY = true
 
     [auth]
